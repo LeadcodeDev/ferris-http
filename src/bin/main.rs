@@ -5,13 +5,15 @@ use tokio::net::TcpListener;
 use lib::app_state::AppState;
 use lib::handlers::article_handler::{article_create, article_delete, article_index, article_show, article_update};
 use lib::handlers::home_handler::handle_home;
+use lib::repositories::article_repository::ArticleRepository;
 use lib::services::article_service::ArticleService;
 
 #[tokio::main]
 async fn main() {
   println!("Hello, world!");
 
-  let article_service = Arc::new(ArticleService::new());
+  let article_repository = Box::new(ArticleRepository::new());
+  let article_service = Arc::new(ArticleService::new(article_repository));
   let app_state = Arc::new(AppState::new(article_service));
 
   let app = Router::new()
