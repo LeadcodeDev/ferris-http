@@ -1,7 +1,7 @@
-use crate::models::article::Article;
-use crate::repositories::article_repository::ArticleRepositoryContract;
-use crate::validators::article_validator::{CreateArticleValidator, UpdateArticleValidator};
 use std::sync::{Arc, Mutex};
+use crate::data::models::article::Article;
+use crate::data::repositories::article_repository::ArticleRepositoryContract;
+use crate::data::validators::article_validator::{CreateArticleValidator, UpdateArticleValidator};
 
 #[derive(Debug)]
 pub struct ArticleService {

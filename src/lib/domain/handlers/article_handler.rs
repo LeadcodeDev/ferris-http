@@ -1,9 +1,9 @@
-use crate::app_state::AppState;
-use crate::validators::article_validator::{CreateArticleValidator, UpdateArticleValidator};
 use axum::extract::{Path, State};
 use axum::Json;
 use serde_json::{json, Value};
 use std::sync::Arc;
+use crate::data::validators::article_validator::{CreateArticleValidator, UpdateArticleValidator};
+use crate::infrastructure::app_state::AppState;
 
 pub async fn article_index(State(state): State<Arc<AppState>>) -> Json<Value> {
   let articles = &state.article_service.index();

@@ -1,5 +1,5 @@
-use crate::models::article::Article;
-use crate::validators::article_validator::{CreateArticleValidator, UpdateArticleValidator};
+use crate::data::models::article::Article;
+use crate::data::validators::article_validator::{CreateArticleValidator, UpdateArticleValidator};
 use axum::Json;
 use std::fmt::Debug;
 use std::sync::MutexGuard;

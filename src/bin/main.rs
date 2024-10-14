@@ -2,11 +2,11 @@ use std::sync::Arc;
 use axum::{serve, Router};
 use axum::routing::{delete, get, post, put};
 use tokio::net::TcpListener;
-use lib::app_state::AppState;
-use lib::handlers::article_handler::{article_create, article_delete, article_index, article_show, article_update};
-use lib::handlers::home_handler::handle_home;
-use lib::repositories::article_repository::ArticleRepository;
-use lib::services::article_service::ArticleService;
+use lib::data::repositories::article_repository::ArticleRepository;
+use lib::domain::handlers::article_handler::{article_create, article_delete, article_index, article_show, article_update};
+use lib::domain::handlers::home_handler::handle_home;
+use lib::domain::services::article_service::ArticleService;
+use lib::infrastructure::app_state::AppState;
 
 #[tokio::main]
 async fn main() {

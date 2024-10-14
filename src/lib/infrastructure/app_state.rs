@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use crate::services::article_service::ArticleService;
+use crate::domain::services::article_service::ArticleService;
 
 #[derive(Debug, Clone)]
 pub struct AppState {
