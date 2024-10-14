@@ -1,9 +1,11 @@
 use crate::handlers::article_handler::UpdateArticleValidator;
 use std::sync::{Arc, Mutex};
+use axum::Json;
+use crate::models::article::Article;
 
 #[derive(Debug, Clone)]
 pub struct ArticleService {
-  pub articles: Arc<Mutex<Vec<String>>>
+  pub articles: Arc<Mutex<Vec<Article>>>
 }
 
 impl ArticleService {
@@ -13,32 +15,39 @@ impl ArticleService {
     }
   }
 
-  pub fn get(&self, value: &String) -> Option<String> {
-    let mut articles = self.articles.lock().unwrap();
+  pub fn get(&self, value: &u32) -> Option<Article> {
+    let articles = self.articles.lock().unwrap();
     articles.iter()
-      .find(|element| element.clone() == value)
+      .find(|element| &element.id == value)
       .cloned()
   }
 
-  pub fn add(&self, value: String) {
+  pub fn add(&self, article: Article) {
     let mut articles = self.articles.lock().unwrap();
-    articles.push(value);
+    articles.push(article);
   }
 
-  pub fn update(&self, id: &String, payload: UpdateArticleValidator) {
+  pub fn update(&self, id: u32, payload: UpdateArticleValidator) {
     let mut articles = self.articles.lock().unwrap();
 
-    let index = articles.iter().position(|element| element == id).unwrap();
-    println!("{}", index);
+    let index = articles.iter().position(|element| element.id == id).unwrap();
 
     articles.remove(index);
-    articles.push(payload.label.unwrap());
+
+    let serialized = Json(&payload);
+    let article = Article::new(
+       payload.id,
+       serialized.title.clone(),
+       serialized.content.clone()
+    );
+
+    articles.push(article);
   }
 
-  pub fn delete(&self, id: &String) {
+  pub fn delete(&self, id: &u32) {
     let mut articles = self.articles.lock().unwrap();
 
-    let index = articles.iter().position(|element| element == id).unwrap();
+    let index = articles.iter().position(|article| &article.id == id).unwrap();
     articles.remove(index);
   }
 }

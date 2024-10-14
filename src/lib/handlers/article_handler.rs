@@ -4,15 +4,20 @@ use axum::Json;
 use serde::Deserialize;
 use serde_json::{json, Value};
 use std::sync::Arc;
+use crate::models::article::Article;
 
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
 pub struct CreateArticleValidator {
-  pub label: String,
+  pub id: u32,
+  pub title: String,
+  pub content: String
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
 pub struct UpdateArticleValidator {
-  pub label: Option<String>,
+  pub id: u32,
+  pub title: String,
+  pub content: String
 }
 
 pub async fn article_index(State(state): State<Arc<AppState>>) -> Json<Value> {
@@ -20,7 +25,7 @@ pub async fn article_index(State(state): State<Arc<AppState>>) -> Json<Value> {
   Json(json!(**articles))
 }
 
-pub async fn article_show(State(state): State<Arc<AppState>>, Path(id): Path<String>) -> Json<Value> {
+pub async fn article_show(State(state): State<Arc<AppState>>, Path(id): Path<u32>) -> Json<Value> {
   let article = &state.article_service.get(&id);
 
   match article {
@@ -34,24 +39,32 @@ pub async fn article_create(
   Json(payload): Json<CreateArticleValidator>,
 ) -> Json<Value> {
   println!("New Article received");
-  state.article_service.add(payload.label);
+
+  let serialized = Json(&payload);
+  let article = Article::new(
+    payload.id,
+    serialized.title.clone(),
+    serialized.content.clone()
+  );
+
+  state.article_service.add(article);
 
   Json(json!({ "message": "Created" }))
 }
 
 pub async fn article_update(
   State(state): State<Arc<AppState>>,
-  Path(id): Path<String>,
+  Path(id): Path<u32>,
   Json(payload): Json<UpdateArticleValidator>,
 ) -> Json<Value> {
-  state.article_service.update(&id, payload);
+  state.article_service.update(id, payload);
 
   Json(json!({}))
 }
 
 pub async fn article_delete(
   State(state): State<Arc<AppState>>,
-  Path(id): Path<String>,
+  Path(id): Path<u32>,
 ) -> Json<Value> {
   state.article_service.delete(&id);
 
