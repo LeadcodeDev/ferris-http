@@ -42,7 +42,7 @@ pub async fn article_delete(
   State(state): State<Arc<AppState>>,
   Path(id): Path<u32>,
 ) -> Json<Value> {
-  state.article_service.delete(&id);
+  state.article_service.delete(id);
 
   Json(json!({}))
 }
